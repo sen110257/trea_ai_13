@@ -74,9 +74,9 @@
                 <div class="control-group">
                   <label class="control-label">对齐</label>
                   <el-radio-group v-model="currentTextElement.textAlign" @change="updateElement">
-                    <el-radio-button label="left"><el-icon><AlignLeft /></el-icon></el-radio-button>
-                    <el-radio-button label="center"><el-icon><AlignCenter /></el-icon></el-radio-button>
-                    <el-radio-button label="right"><el-icon><AlignRight /></el-icon></el-radio-button>
+                    <el-radio-button label="left">左</el-radio-button>
+                    <el-radio-button label="center">中</el-radio-button>
+                    <el-radio-button label="right">右</el-radio-button>
                   </el-radio-group>
                 </div>
               </div>
@@ -234,11 +234,11 @@
 import { ref, computed, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { store, updateCardBackground, updateCardSize, toggleEffect, setMaterialTab } from '../store'
-import { fonts, fontEffects, backgrounds, cardSizes, effects as effectsList, musicOptions } from '../data/materials'
+import { fonts, fontEffects, backgrounds, effects as effectsList, musicOptions } from '../data/materials'
+import { cardSizes } from '../data/categories'
 import CardPreview from './CardPreview.vue'
 import {
-  EditPen, Close, AlignLeft, AlignCenter, AlignRight,
-  Plus, RefreshRight, Grid, Document, Picture, UserFilled
+  EditPen, Close, Plus, RefreshRight, Grid, Document, Picture, UserFilled
 } from '@element-plus/icons-vue'
 
 const activeTab = ref('text')

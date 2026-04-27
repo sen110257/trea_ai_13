@@ -17,9 +17,9 @@
             @click="selectCategory(category)"
           >
             <span class="category-icon">
-              <el-icon v-if="category.icon">
-                <component :is="category.icon" />
-              </el-icon>
+              <span class="category-emoji" v-if="categoryEmoji[category.id]">
+                {{ categoryEmoji[category.id] }}
+              </span>
               <span v-else class="category-emoji">{{ category.name.charAt(0) }}</span>
             </span>
             <span class="category-name">{{ category.name }}</span>
@@ -53,27 +53,17 @@
 import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { store, setCategory, setSubCategory } from '../store'
 import { categories } from '../data/categories'
-import {
-  Star, Promotion, Document, Clock, House, ChatLineSquare,
-  Cup, Sunny, Rainy, Van, Heart, Moon, Calendar, Snowy,
-  Flag, Reading, Tools, UserFilled, User, Wheat,
-  Connection, HotWater, MapLocation, Drizzling, Sunset,
-  ColdDrink, Cake, Coin, House as HouseIcon, TrendCharts,
-  ChatLineRound, Briefcase, Sunrise, Warning, Trophy,
-  Grid, Picture
-} from '@element-plus/icons-vue'
 
 const scrollRef = ref(null)
 const subScrollRef = ref(null)
 
-const iconMap = {
-  Star, Promotion, Document, Clock, House, ChatLineSquare,
-  Cup, Sunny, Rainy, Van, Heart, Moon, Calendar, Snowy,
-  Flag, Reading, Tools, UserFilled, User, Wheat,
-  Connection, HotWater, MapLocation, Drizzling, Sunset,
-  ColdDrink, Cake, Coin, House: HouseIcon, TrendCharts,
-  ChatLineRound, Briefcase, Sunrise, Warning, Trophy,
-  Grid, Picture
+const categoryEmoji = {
+  recommend: '🎨',
+  traditional: '🏮',
+  legal: '📄',
+  solar: '⏰',
+  life: '🏠',
+  wishes: '💬'
 }
 
 const currentCategoryWithSub = computed(() => {
@@ -100,13 +90,7 @@ const scrollToActive = async () => {
   if (scrollRef.value) {
     const activeTab = scrollRef.value.querySelector('.category-tab.active')
     if (activeTab) {
-      const container = scrollRef.value
-      const containerRect = container.getBoundingClientRect()
-      const tabRect = activeTab.getBoundingClientRect()
-      
-      if (tabRect.left < containerRect.left || tabRect.right > containerRect.right) {
-        activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
-      }
+      activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
     }
   }
   
@@ -197,11 +181,13 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  color: var(--text-color-secondary);
 }
 
-.category-tab.active .category-icon {
+.category-emoji {
+  font-size: 20px;
+}
+
+.category-tab.active .category-emoji {
   color: white;
 }
 
@@ -271,9 +257,7 @@ onMounted(() => {
     padding: var(--spacing-xs) var(--spacing-sm);
   }
 
-  .category-icon {
-    width: 24px;
-    height: 24px;
+  .category-emoji {
     font-size: 18px;
   }
 
