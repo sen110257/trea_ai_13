@@ -85,7 +85,19 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .main-content {
+    padding-top: calc(var(--header-height) + 48px + 60px);
     padding-bottom: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding-top: calc(var(--header-height) + 48px + 60px);
+  }
+  
+  .content-wrapper {
+    padding: var(--spacing-sm);
+    gap: var(--spacing-md);
   }
 }
 </style>

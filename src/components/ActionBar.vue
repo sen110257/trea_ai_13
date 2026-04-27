@@ -56,14 +56,16 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { store, addToFavorites, removeFromFavorites, isFavorite as checkIsFavorite, addToHistory } from '../store'
-import { copyToClipboard, toast } from '../utils'
+import { copyToClipboard } from '../utils'
 import {
   Star, StarFilled, CopyDocument, FullScreen,
   Download, Share, EditPen
 } from '@element-plus/icons-vue'
+
+const isSaving = ref(false)
 
 const isFavorite = computed(() => {
   return store.selectedTemplate && checkIsFavorite(store.selectedTemplate.id)
@@ -113,25 +115,120 @@ const openFullscreen = () => {
   }
 }
 
-const saveCard = () => {
+const generateCardImage = async () => {
+  const previewCard = document.querySelector('.preview-card')
+  if (!previewCard) {
+    throw new Error('找不到贺卡预览区域')
+  }
+  
+  try {
+    const html2canvas = (await import('html2canvas')).default
+    
+    const canvas = await html2canvas(previewCard, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: null,
+      logging: false
+    })
+    
+    return canvas
+  } catch (error) {
+    console.error('生成贺卡图片失败:', error)
+    throw error
+  }
+}
+
+const downloadImage = (canvas, filename) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const link = document.createElement('a')
+      link.download = filename
+      link.href = canvas.toDataURL('image/png')
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      resolve()
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+const saveCard = async () => {
   if (!store.selectedTemplate) {
     ElMessage.warning('请先选择一个模板')
     return
   }
   
-  ElMessage.success('贺卡已保存到本地')
+  if (isSaving.value) return
   
-  addToHistory(store.currentCard)
+  isSaving.value = true
+  
+  try {
+    const loading = ElMessage({
+      message: '正在生成贺卡图片...',
+      type: 'info',
+      duration: 0
+    })
+    
+    const canvas = await generateCardImage()
+    const timestamp = new Date().toISOString().slice(0, 10)
+    const filename = `贺卡_${store.selectedTemplate.name}_${timestamp}.png`
+    
+    if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      try {
+        const imageData = canvas.toDataURL('image/png')
+        
+        if (navigator.share) {
+          const response = await fetch(imageData)
+          const blob = await response.blob()
+          const file = new File([blob], filename, { type: 'image/png' })
+          
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: '节日贺卡',
+              text: `我用节日贺卡生成器制作了「${store.selectedTemplate.name}」，快来看看吧！`
+            })
+            ElMessage.success('分享成功')
+          } else {
+            await downloadImage(canvas, filename)
+            ElMessage.success('贺卡已保存，请查看下载目录')
+          }
+        } else {
+          await downloadImage(canvas, filename)
+          ElMessage.success('贺卡已保存，请查看下载目录')
+        }
+      } catch (shareError) {
+        console.log('分享失败，使用常规下载:', shareError)
+        await downloadImage(canvas, filename)
+        ElMessage.success('贺卡已保存，请查看下载目录')
+      }
+    } else {
+      await downloadImage(canvas, filename)
+      ElMessage.success('贺卡已保存到本地')
+    }
+    
+    addToHistory(store.currentCard)
+    loading.close()
+    
+  } catch (error) {
+    console.error('保存贺卡失败:', error)
+    ElMessage.error('保存贺卡失败，请重试')
+  } finally {
+    isSaving.value = false
+  }
 }
 
-const shareCard = () => {
+const shareCard = async () => {
   if (!store.selectedTemplate) {
     ElMessage.warning('请先选择一个模板')
     return
   }
   
   ElMessageBox.alert(
-    '您可以长按图片保存后分享到微信/朋友圈，或使用保存按钮下载图片后分享。',
+    '您可以点击"保存贺卡"按钮下载图片，然后长按图片保存后分享到微信/朋友圈。\n\n在手机上，保存后系统会提示您选择分享方式。',
     '分享贺卡',
     {
       confirmButtonText: '我知道了',

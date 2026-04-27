@@ -248,6 +248,10 @@ onUnmounted(() => {
     min-height: var(--header-height);
   }
 
+  .header-content {
+    height: var(--header-height);
+  }
+
   .logo-title {
     font-size: var(--font-size-base);
   }
@@ -266,7 +270,7 @@ onUnmounted(() => {
 
   .action-buttons {
     position: fixed;
-    top: var(--header-height);
+    top: calc(var(--header-height) + 48px);
     right: 0;
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
