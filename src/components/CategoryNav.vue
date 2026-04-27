@@ -249,11 +249,14 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .category-nav {
-    top: calc(var(--header-height) + 44px);
+    position: fixed;
+    top: calc(var(--header-height) + 48px);
+    left: 0;
+    right: 0;
   }
 
   .category-tab {
-    min-width: 60px;
+    min-width: 64px;
     padding: var(--spacing-xs) var(--spacing-sm);
   }
 
@@ -262,6 +265,54 @@ onMounted(() => {
   }
 
   .category-name {
+    font-size: 10px;
+    padding: 0 2px;
+  }
+
+  .sub-category-tab {
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .sub-category-name {
+    font-size: 11px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-tab {
+    min-width: 56px;
+    padding: 4px 8px;
+  }
+
+  .category-emoji {
+    font-size: 16px;
+  }
+
+  .category-name {
+    font-size: 9px;
+  }
+
+  .category-tabs {
+    gap: 4px;
+    padding: 8px 12px;
+  }
+
+  .sub-category-tabs {
+    gap: 4px;
+    padding: 0 12px 8px;
+  }
+
+  .sub-category-tab {
+    padding: 4px 8px;
+    gap: 2px;
+  }
+
+  .sub-category-emoji {
+    font-size: 12px;
+  }
+
+  .sub-category-name {
     font-size: 10px;
   }
 }
