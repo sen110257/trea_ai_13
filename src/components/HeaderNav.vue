@@ -75,7 +75,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { store, toggleTheme, toggleHistoryPanel, toggleFavoritePanel } from '../store'
-import { searchTemplates, selectTemplate } from '../data/templates'
+import { searchTemplates } from '../data/templates'
 
 const searchKeyword = ref('')
 const isMobile = ref(false)

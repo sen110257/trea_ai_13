@@ -121,10 +121,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { ElMessage } from 'element-plus'
-import { store, addToFavorites, removeFromFavorites, isFavorite as storeIsFavorite } from '../store'
-import { selectTemplate as selectStoreTemplate } from '../data/templates'
-import { templates, getTemplatesByCategory, templateStyles } from '../data/templates'
-import { categories } from '../data/categories'
+import { store, addToFavorites, removeFromFavorites, isFavorite as storeIsFavorite, selectTemplate as selectStoreTemplate } from '../store'
+import { templates, getTemplatesByCategory } from '../data/templates'
+import { categories, templateStyles } from '../data/categories'
 import { effects } from '../data/materials'
 import { View, Check } from '@element-plus/icons-vue'
 

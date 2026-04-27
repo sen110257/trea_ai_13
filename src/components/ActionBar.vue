@@ -58,7 +58,7 @@
 <script setup>
 import { computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { store, addToFavorites, removeFromFavorites, isFavorite, addToHistory } from '../store'
+import { store, addToFavorites, removeFromFavorites, isFavorite as checkIsFavorite, addToHistory } from '../store'
 import { copyToClipboard, toast } from '../utils'
 import {
   Star, StarFilled, CopyDocument, FullScreen,
@@ -66,7 +66,7 @@ import {
 } from '@element-plus/icons-vue'
 
 const isFavorite = computed(() => {
-  return store.selectedTemplate && isFavorite(store.selectedTemplate.id)
+  return store.selectedTemplate && checkIsFavorite(store.selectedTemplate.id)
 })
 
 const toggleFavorite = () => {
